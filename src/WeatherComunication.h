@@ -7,15 +7,18 @@
 
 #include "WeatherRecord.h"
 
-#include "RH_RF95.h"
+
+#include "SX1272.h"
+
 
 
 class WeatherComunication
 {
 	public:
 	//Public Functions
-	WeatherComunication(int lora_cs, int lora_rst, int lora_int, float lora_freq);		// Receive the LoRa module configurations
-	WeatherComunication(int lora_cs, int lora_rst, int lora_int, float lora_freq, const char* channel);		// Receive the LoRa module configurations
+	WeatherComunication();		// Receive the LoRa module configurations
+	// WeatherComunication(int lora_cs, int lora_rst, int lora_int, float lora_freq);		// Receive the LoRa module configurations
+	// WeatherComunication(int lora_cs, int lora_rst, int lora_int, float lora_freq, const char* channel);		// Receive the LoRa module configurations
 	int configLoRa();																	// Begin & Config the LoRa module (return 0 if ok, return 1 if erro)
 	//void sendMessageSerial(WeatherRecord wr, HardwareSerial* DefaultSerial);			// Receive the Weather Record & send message via Serial Monitor
 	void sendMessageSerial(WeatherRecord wr);			// Receive the Weather Record & send message via Serial Monitor
@@ -24,7 +27,8 @@ class WeatherComunication
 	//Public Variables
 
 	private:
-	RH_RF95 rf95;
+			SX1272 sx;
+
 
 	//Private Functions
 

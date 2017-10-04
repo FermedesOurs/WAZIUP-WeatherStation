@@ -5,12 +5,12 @@
 
 
 //Initialize Weather Station
-WeatherStation::WeatherStation(float rf_lora_freq, int wind_speed, int rain, int wind_dir, int period_time)
+WeatherStation::WeatherStation(int wind_speed, int rain, int wind_dir, int period_time)
 :
 #ifdef ENABLE_INA
 ina219(0x41),
 #endif
-wc(RFM95_CS, RFM95_RST, RFM95_INT, rf_lora_freq),
+wc(),
 sr(rain),
 sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 {
@@ -41,42 +41,6 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 	#endif
 }
 
-//Initialize Weather Station
-WeatherStation::WeatherStation(float rf_lora_freq, int wind_speed, int rain, int wind_dir, int period_time, const char* channel)
-:
-#ifdef ENABLE_INA
-ina219(0x41),
-#endif
-wc(RFM95_CS, RFM95_RST, RFM95_INT, rf_lora_freq, channel),
-sr(rain),
-sw(wind_speed, WDIR_CALIBRATION, wind_dir)
-{
-	period=period_time;
-	minutes = 0;
-	temperature = 0;
-	humidity = 0;
-	pressure = 0;
-	windDirection = 0;
-	windGust = 0;
-	windSpeed = 0;
-	amountRain = 0;
-	batteryVoltage = 0;
-	time_before=0;
-	time_after=0;
-
-	temperatures = new float[period_time];
-	humidities = new float[period_time];
-	pressures = new float[period_time];
-	voltages = new float[period_time];
-
-	#ifdef ENABLE_INA
-	batteryVoltage2 = 0;
-	currentNow=0;
-	currentMin=9999;
-	currentMax=-9999;
-	voltages2= new float[period_time];
-	#endif
-}
 
 	//---------------------------------	Inicialize Weather Station --------------------------------------
 	void WeatherStation::init()
@@ -170,7 +134,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		  else
 		  {
 		    #ifdef ENABLE_DEBUG
-		      Serial.println(F("LoRa module config with Sucess!"));
+		      Serial.println(F("LoRa module config with Success!"));
 		    #endif
 		  }
 
@@ -258,7 +222,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		    voltages[i]=0;
 
 				#ifdef DEBUG_UI
-				Serial.print("Temperature"); Serial.print(i); Serial.print(": "); Serial.print(temperatures[i]);
+				Serial.print(" Temperature"); Serial.print(i); Serial.print(": "); Serial.print(temperatures[i]);
 				Serial.print(" Humidity"); Serial.print(i); Serial.print(": "); Serial.print(humidities[i]);
 				Serial.print(" Pressure"); Serial.print(i); Serial.print(": "); Serial.print(pressures[i]);
 				Serial.print(" Voltage"); Serial.print(i); Serial.print(": "); Serial.println(voltages[i]);

@@ -23,7 +23,7 @@
 #define TIME_H24 1
 #define TIME_H12 0
 
-#define OFF RTC_MODE2_MASK_SEL_OFF
+#define OFFF RTC_MODE2_MASK_SEL_OFF
 #define SEC RTC_MODE2_MASK_SEL_SS
 #define MMSS RTC_MODE2_MASK_SEL_MMSS
 #define HHMMSS RTC_MODE2_MASK_SEL_HHMMSS
@@ -58,21 +58,21 @@ class RTCInt {
 public:
 
   RTCInt() {};
-  
+
   TIME local_time;
   DATE local_date;
-  
+
   void begin(bool timeMode);
-  
+
   /* Get Time Functions */
 
   unsigned int getHour(void);
   unsigned int getMinute(void);
   unsigned int getSecond(void);
   void getTime(void);
-  unsigned char getMeridian(void); 
- 
- /* Get Date Functions */ 
+  unsigned char getMeridian(void);
+
+ /* Get Date Functions */
   unsigned int getDay(void);
   unsigned int getMonth(void);
   unsigned int getYear(void);
@@ -86,22 +86,22 @@ public:
   void setTime(unsigned int hour, unsigned char meridian, unsigned int minute, unsigned int second);
   void setTime(void);
 
- /* Set Date Functions */ 
+ /* Set Date Functions */
   void setDay(unsigned int day);
   void setMonth(unsigned int month);
   void setYear(unsigned int year);
   void setDate(unsigned int day, unsigned int month, unsigned int year);
   void setDate(void);
-  
+
  /* Alarm Functions */
 	void enableAlarm(unsigned int mode, unsigned int type, voidFuncPtr callback);
 	void setAlarm(void);
 	bool alarmMatch(void);
-	
+
 
 private:
   unsigned int Alarm_Mode=0;
-  bool RTCSync(void);  
+  bool RTCSync(void);
   void RTCdisable(void);
   void RTCenable(void);
   void RTCreset(void);

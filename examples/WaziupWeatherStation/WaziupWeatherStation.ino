@@ -17,11 +17,6 @@
 // Define LoRa module Frequency
 #define RF95_FREQ 868.0
 
-// Thing Speak id channel
-#define THINGSPEAK
-#ifdef THINGSPEAK
-static const char ThingSpeak[]="IV4LNFVW2ZZ78MVI";
-#endif
 
 // Weather Station pins to Adafruit Feather M0
 #define RAIN 11
@@ -30,11 +25,8 @@ static const char ThingSpeak[]="IV4LNFVW2ZZ78MVI";
 
 // Include and create Weather Station object.
 #include <WeatherStation.h>
-#ifdef THINGSPEAK
-WeatherStation ws(RF95_FREQ, WSPEED, RAIN, WDIR, PERIOD, ThingSpeak);
-#else
-WeatherStation ws(RF95_FREQ, WSPEED, RAIN, WDIR, PERIOD);
-#endif
+
+WeatherStation ws(WSPEED, RAIN, WDIR, PERIOD);
 
 
 // Setup

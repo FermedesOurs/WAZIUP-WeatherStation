@@ -2,41 +2,86 @@
 #include "WeatherComunication.h"
 
 
+// SX1272 configurations
+#define MAX_DBM 14
+#define DEFAULT_CHANNEL CH_10_868
+#define LORAMODE  1
+#define node_addr 8
+#define DEFAULT_DEST_ADDR 1
+
+
+
+
 //Initialize
-WeatherComunication::WeatherComunication(int cs, int rst, int interrupt, float freq)
-:rf95(cs, interrupt)	// Singleton instance of the radio driver object
+// WeatherComunication::WeatherComunication(int cs, int rst, int interrupt, float freq)
+// :rf95(cs, interrupt)	// Singleton instance of the radio driver object
+// {
+// 	lora_cs = cs;			// Get LoRa module chip select pin
+// 	lora_rst = rst;			// Get LoRa module reset pin
+// 	lora_int = interrupt;	// Get LoRa imodule interrupt pin
+// 	lora_freq = freq;		// Get LoRa module frequency
+// 	cont=0;
+// }
+
+WeatherComunication::WeatherComunication()
+:sx()	// Singleton instance of the radio driver object
 {
-	lora_cs = cs;			// Get LoRa module chip select pin
-	lora_rst = rst;			// Get LoRa module reset pin
-	lora_int = interrupt;	// Get LoRa imodule interrupt pin
-	lora_freq = freq;		// Get LoRa module frequency
-	cont=0;
+	// lora_cs = cs;			// Get LoRa module chip select pin
+	// lora_rst = rst;			// Get LoRa module reset pin
+	// lora_int = interrupt;	// Get LoRa imodule interrupt pin
+	// lora_freq = freq;		// Get LoRa module frequency
+	// cont=0;
 }
 
 //Initialize
-WeatherComunication::WeatherComunication(int cs, int rst, int interrupt, float freq, const char* channel)
-:rf95(cs, interrupt)	// Singleton instance of the radio driver object
-{
-	lora_cs = cs;			// Get LoRa module chip select pin
-	lora_rst = rst;			// Get LoRa module reset pin
-	lora_int = interrupt;	// Get LoRa imodule interrupt pin
-	lora_freq = freq;		// Get LoRa module frequency
-	ts_channel = channel;
-	cont=0;
-}
+// WeatherComunication::WeatherComunication(int cs, int rst, int interrupt, float freq, const char* channel)
+// :rf95(cs, interrupt)	// Singleton instance of the radio driver object
+// {
+// 	lora_cs = cs;			// Get LoRa module chip select pin
+// 	lora_rst = rst;			// Get LoRa module reset pin
+// 	lora_int = interrupt;	// Get LoRa imodule interrupt pin
+// 	lora_freq = freq;		// Get LoRa module frequency
+// 	ts_channel = channel;
+// 	cont=0;
+// }
 	//----------------------------------------- Config LoRa ----------------------------------------
 	int WeatherComunication::configLoRa()
 	{
-		if(rf95.init()==1)
-		{
-			rf95.setFrequency(lora_freq);
-			delay(50);
-			rf95.sleep();
-			return 0;
-		}
-		return 1;
+			// if(rf95.init()==1)
+			// {
+			// 	rf95.setFrequency(lora_freq);
+			// 	delay(50);
+			// 	rf95.sleep();
+			// 	return 0;
+			// }
+			// return 1;
 
- 		// Probably need to put LoRa mode
+
+			// Power ON the module
+			sx.ON();
+
+			// Set transmission mode and print the result
+			sx.setMode(LORAMODE);
+
+			// enable carrier sense
+  		sx._enableCarrierSense=true;
+
+			// Select frequency channel
+  		sx.setChannel(DEFAULT_CHANNEL);
+
+			// Enable PA Boost
+			sx._needPABOOST=true;
+
+			//e = sx1272.setPowerDBM((uint8_t)MAX_DBM);
+		  sx.setPower('X');// setting the power at maximum!, still range is extremely low. it can be 'x' X more power
+
+		  // Set the node address and print the result
+		  sx.setNodeAddress(node_addr);
+
+		  delay(500);
+
+			return 0;
+
 	}
 	//----------------------------------------------------------------------------------------------
 
@@ -82,35 +127,54 @@ WeatherComunication::WeatherComunication(int cs, int rst, int interrupt, float f
 	  	char auxBuf[20];
 	  	uint8_t data[150];
 
-	  	cont++;
-
-	  	r_size = sprintf((char*)data, "WT123 - %d;", cont);
-	  	r_size += sprintf((char*)data + r_size, "TP;%s;", dtostrf(wr.getTemperature(), 2, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "HD;%s;", dtostrf(wr.getHumidity(), 2, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "PA;%s;", dtostrf(wr.getPressure(), 6, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "WD;%s;", dtostrf(wr.getWindDirection(), 3, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "WS;%s;", dtostrf(wr.getWindSpeed(), 3, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "WG;%s;", dtostrf(wr.getWindGust(), 3, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "RA;%s;", dtostrf(wr.getAmountRain(), 2, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "BV;%s;", dtostrf(wr.getBatteryVoltage(), 2, 2, auxBuf));
-			#ifdef ENABLE_INA
-			r_size += sprintf((char*)data + r_size, "BINA;%s;", dtostrf(wr.getBatteryINA(), 2, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "minC;%s;", dtostrf(wr.getMinCurrent(), 2, 2, auxBuf));
-	  	r_size += sprintf((char*)data + r_size, "maxC;%s;", dtostrf(wr.getMaxCurrent(), 2, 2, auxBuf));
-			#endif
-			// #ifdef THINGSPEAK
-			r_size += sprintf((char*)data + r_size, "TS;%s;", ts_channel);
-			// #endif
+			sx.setPacketType(PKT_TYPE_DATA);
 
 
-		// Send message via LoRa
-		rf95.send(data, r_size);
-		rf95.waitPacketSent();
+			r_size = sprintf((char*)data , "\\!77LG70JEWEMGKB8M#1#TP/%s/", dtostrf(wr.getTemperature(), 2, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "HD/%s/", dtostrf(wr.getHumidity(), 2, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "PA/%s/", dtostrf(wr.getPressure(), 6, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "WD/%s/", dtostrf(wr.getWindDirection(), 3, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "WS/%s/", dtostrf(wr.getWindSpeed(), 3, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "WG/%s/", dtostrf(wr.getWindGust(), 3, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "RA/%s/", dtostrf(wr.getAmountRain(), 2, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "BV/%s/", dtostrf(wr.getBatteryVoltage(), 2, 2, auxBuf));
+			// 	#ifdef ENABLE_INA
+			// 	r_size += sprintf((char*)data + r_size, "BINA;%s;", dtostrf(wr.getBatteryINA(), 2, 2, auxBuf));
+			// 	r_size += sprintf((char*)data + r_size, "minC;%s;", dtostrf(wr.getMinCurrent(), 2, 2, auxBuf));
+			// 	r_size += sprintf((char*)data + r_size, "maxC;%s;", dtostrf(wr.getMaxCurrent(), 2, 2, auxBuf));
+			// 	#endif
+			// 	// #ifdef THINGSPEAK
+			// 	r_size += sprintf((char*)data + r_size, "TS;%s;", ts_channel);
+			// 	// #endif
 
-		// Apagar
-		// Serial.write(data, r_size);
+			sx.sendPacketTimeout(DEFAULT_DEST_ADDR, data, r_size);
 
-		delay(50);
-		rf95.sleep();
+
+				// cont++;
+				//
+				// r_size = sprintf((char*)data, "WT123 - %d;", cont);
+		  	// r_size += sprintf((char*)data + r_size, "TP;%s;", dtostrf(wr.getTemperature(), 2, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "HD;%s;", dtostrf(wr.getHumidity(), 2, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "PA;%s;", dtostrf(wr.getPressure(), 6, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "WD;%s;", dtostrf(wr.getWindDirection(), 3, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "WS;%s;", dtostrf(wr.getWindSpeed(), 3, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "WG;%s;", dtostrf(wr.getWindGust(), 3, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "RA;%s;", dtostrf(wr.getAmountRain(), 2, 2, auxBuf));
+		  	// r_size += sprintf((char*)data + r_size, "BV;%s;", dtostrf(wr.getBatteryVoltage(), 2, 2, auxBuf));
+				// 	#ifdef ENABLE_INA
+				// 	r_size += sprintf((char*)data + r_size, "BINA;%s;", dtostrf(wr.getBatteryINA(), 2, 2, auxBuf));
+			  // 	r_size += sprintf((char*)data + r_size, "minC;%s;", dtostrf(wr.getMinCurrent(), 2, 2, auxBuf));
+			  // 	r_size += sprintf((char*)data + r_size, "maxC;%s;", dtostrf(wr.getMaxCurrent(), 2, 2, auxBuf));
+				// 	#endif
+				// 	// #ifdef THINGSPEAK
+				// 	r_size += sprintf((char*)data + r_size, "TS;%s;", ts_channel);
+				// 	// #endif
+				//
+				// // Send message via LoRa
+				// rf95.send(data, r_size);
+				// rf95.waitPacketSent();
+				//
+				// delay(50);
+				// rf95.sleep();
 	}
 	//----------------------------------------------------------------------------------------------

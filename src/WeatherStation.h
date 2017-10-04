@@ -15,7 +15,7 @@
 #define RFM95_INT 3
 
 // Define Baudrate
-#define BAUDRATE 9600
+#define BAUDRATE 38400
 
 // Include Weather Station Objects
 #ifdef ENABLE_INA
@@ -36,8 +36,7 @@ class WeatherStation
 
 	public:
 	//Public Functions
-	WeatherStation(float rf_lora_freq, int wind_speed, int rain, int wind_dir, int period_time);
-	WeatherStation(float rf_lora_freq, int wind_speed, int rain, int wind_dir, int period_time, const char* channel);
+	WeatherStation(int wind_speed, int rain, int wind_dir, int period_time);
 	void init();
 	int begin();
 	int beginSensors();
