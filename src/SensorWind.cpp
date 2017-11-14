@@ -2,7 +2,7 @@
 #include "SensorWind.h"
 
 
-//Initialize
+//Initialize SensorWind
 SensorWind::SensorWind(int interrupt_pin, double calibration, const uint8_t direction_pin)
 {
 	w_calibration=calibration;
@@ -83,11 +83,6 @@ SensorWind::SensorWind(int interrupt_pin, double calibration, const uint8_t dire
 	//-------------------------------- Returns the Wind Direction Indice ---------------------------
 	float SensorWind::getWindDirection()
 	{
-	  #ifdef DEBUG_UI
-		  // For testing
-		  Serial.println("");  Serial.println(" |||||| WIND POSICION |||||| ");
-	  #endif
-
 	  int count=0;
 	  int indice=0;
 
@@ -99,21 +94,7 @@ SensorWind::SensorWind(int interrupt_pin, double calibration, const uint8_t dire
 	      count = windPos[i];
 	      indice = i;
 	    }
-
-	    #ifdef DEBUG_UI
-	    	// For testing
-        Serial.print(" i: ");    Serial.print(i);    Serial.print(" - ");
-        Serial.print(windPos[i]); Serial.println(" x");
-      #endif
-   	  }
-
-   	  #ifdef DEBUG_UI
-	  		// For testing
-			  Serial.print("-- Angle occurencies in the last hour--: ");
-			  Serial.print(" i: ");  Serial.print(indice);  Serial.print(" - ");
-			  Serial.print(count); Serial.println("x");
-	  #endif
-
+   	}
 
     if (indice==5) return (112.5);
 	  if (indice==3) return (67.5);
@@ -211,27 +192,22 @@ SensorWind::SensorWind(int interrupt_pin, double calibration, const uint8_t dire
 	SensorWind * SensorWind::SensorWind_instance;		// Auxiliar instance to Rain Interrupt ISR
 
 
-
-
 	//--------------------------- Clear the Wind Direction Indice vector ---------------------------
 	void SensorWind::clearWind()
 	{
-
-	  	// Clear the Wind Direction Indice vector
+	  // Clear the Wind Direction Indice vector
 		for (int i=0; i<16; i++)
   		{
       		windPos[i]=0;
  		}
 
-
 		t_min=36000000;
   	wind=0;
-  	control=0;					// (FINAL VERSION: TO BE DELETED)
+  	control=0;
 	}
 	//----------------------------------------------------------------------------------------------
 
 
-	// (FINAL VERSION: TO BE DELETED)
 	//-------------------------------------- Set Wind Control --------------------------------------
 	void SensorWind::clearWindControl()
 	{

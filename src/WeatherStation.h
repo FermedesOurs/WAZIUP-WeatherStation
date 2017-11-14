@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 
-#define ENABLE_DEBUG
-
+#define ENABLE_DEBUG	// Enabling debug prints
 
 #define VBATPIN A7    // Voltage Battery Voltage Pin
 #define WDIR_CALIBRATION 0.973    // (990/1017) 990 = max value table, 1017 max ADC acquired
@@ -15,12 +14,9 @@
 #define RFM95_INT 3
 
 // Define Baudrate
-#define BAUDRATE 38400
+#define BAUDRATE 9600
 
 // Include Weather Station Objects
-#ifdef ENABLE_INA
-#include "Adafruit_INA219.h"
-#endif
 #include "SensorRTC.h"
 #include "WeatherRecord.h"
 #include "WeatherComunication.h"
@@ -33,9 +29,8 @@
 
 class WeatherStation
 {
-
+	// Public Variables/Functions
 	public:
-	//Public Functions
 	WeatherStation(int wind_speed, int rain, int wind_dir, int period_time);
 	void init();
 	int begin();
@@ -43,19 +38,12 @@ class WeatherStation
 	void clearValues();
 	void getWeatherValues();
 	void getWeatherAverage();
-	#ifdef ENABLE_INA
-	void compareCurrents(float current);
-	#endif
 	void task();
 	float getBatteryVoltage();
 
 
-
-	//Public Variables
+	//Private Variables/Functions
 	private:
-	#ifdef ENABLE_INA
-	Adafruit_INA219 ina219;
-	#endif
 	SensorRTC rtc;
 	WeatherRecord wr;
 	WeatherComunication wc;
@@ -65,20 +53,12 @@ class WeatherStation
 	SensorRain sr;
 	SensorWind sw;
 
-
-
-
-	//Private Functions
-
-	//Private Variables
 	unsigned long minutes;
 	unsigned long time_before;
 	unsigned long time_after;
-
-
 	int period;
 
-	//HardwareSerial* DefaultSerial;		Delete
+	//HardwareSerial* DefaultSerial;
 
 	float * temperatures;
 	float * humidities;
@@ -95,13 +75,6 @@ class WeatherStation
 	float windSpeed;
 	float amountRain;
 
-	#ifdef ENABLE_INA
-	float * voltages2;
-	float batteryVoltage2;
-	float currentNow;
-	float currentMin;
-	float currentMax;
-	#endif
 };
 
 #endif

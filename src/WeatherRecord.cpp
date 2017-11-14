@@ -103,33 +103,3 @@ WeatherRecord::WeatherRecord(){
 		return battery;
 	}
 	//----------------------------------------------------------------------------------------------
-
-
-//--------------------------------------- INA219 -------------------------------------------------
-#ifdef ENABLE_INA
-	void WeatherRecord::setBatteryINA(float value){
-		batteryINA=value;
-	}
-
-	float WeatherRecord::getBatteryINA(){
-		return batteryINA;
-	}
-
-	// ------------------------------------------- Max Current  ------------------------------------
-	void WeatherRecord::setMaxCurrent(float value){
-		maxCurrent=value;
-	}
-
-	float WeatherRecord::getMaxCurrent(){
-		return maxCurrent;
-	}
-
-	// ------------------------------------------- Min Current  ------------------------------------
-	void WeatherRecord::setMinCurrent(float value){
-		minCurrent=value;
-	}
-	float WeatherRecord::getMinCurrent(){
-		return minCurrent;
-	}
-#endif
-//----------------------------------------------------------------------------------------------

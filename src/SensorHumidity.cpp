@@ -2,7 +2,7 @@
 #include "SensorHumidity.h"
 
 
-//Initialize
+//Initialize SensorHumidity
 SensorHumidity::SensorHumidity()
 {
 

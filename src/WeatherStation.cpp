@@ -1,15 +1,9 @@
 #include "WeatherStation.h"
 
 
-
-
-
-//Initialize Weather Station
+//Initialize WeatherStation
 WeatherStation::WeatherStation(int wind_speed, int rain, int wind_dir, int period_time)
 :
-#ifdef ENABLE_INA
-ina219(0x41),
-#endif
 wc(),
 sr(rain),
 sw(wind_speed, WDIR_CALIBRATION, wind_dir)
@@ -31,15 +25,8 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 	humidities = new float[period_time];
 	pressures = new float[period_time];
 	voltages = new float[period_time];
-
-	#ifdef ENABLE_INA
-	batteryVoltage2 = 0;
-	currentNow=0;
-	currentMin=9999;
-	currentMax=-9999;
-	voltages2= new float[period_time];
-	#endif
 }
+
 
 
 	//---------------------------------	Inicialize Weather Station --------------------------------------
@@ -120,7 +107,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		  	#ifdef ENABLE_DEBUG
 		    Serial.println(F("RTC Sensor Found!"));
 		    #endif
-		    rtc.configRTC();    // Configure RTC
+		    rtc.configRTC(F(__DATE__),F(__TIME__));    // Configure RTC
 		  }
 
 			// LoRa module
@@ -150,10 +137,6 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 	//----------------------- To begin the Weather Station mesurement sensors ---------------------------
 	int WeatherStation::beginSensors()
 	{
-			#ifdef ENABLE_INA
-			ina219.begin();   // Connect to INA219 module.
-			#endif
-
 			// Pressure Sensor
 			sp.begin();
 
@@ -206,31 +189,12 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		  batteryVoltage=0;
 			minutes=0;
 
-			#ifdef ENABLE_INA
-			batteryVoltage2=0;
-		  currentNow=0;
-		  currentMin=9999;
-		  currentMax=-9999;
-			#endif
-
-
-		  for (int i=0; i<period; i++)			// Not necessary clear. Change to next version!
+		  for (int i=0; i<period; i++)
 		  {
 		    temperatures[i]=0;
 		    humidities[i]=0;
 		    pressures[i]=0;
 		    voltages[i]=0;
-
-				#ifdef DEBUG_UI
-				Serial.print(" Temperature"); Serial.print(i); Serial.print(": "); Serial.print(temperatures[i]);
-				Serial.print(" Humidity"); Serial.print(i); Serial.print(": "); Serial.print(humidities[i]);
-				Serial.print(" Pressure"); Serial.print(i); Serial.print(": "); Serial.print(pressures[i]);
-				Serial.print(" Voltage"); Serial.print(i); Serial.print(": "); Serial.println(voltages[i]);
-				#endif
-
-				#ifdef ENABLE_INA
-				voltages2[i]=0;
-				#endif
 		  }
 
 		  sw.clearWind();
@@ -250,13 +214,6 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		voltages[minutes-1] = getBatteryVoltage(); 	// Battery Voltage (V)
 	  int windIndice = sw.incrementWindIndice();		// Increment Wind Indice
 
-		#ifdef ENABLE_INA
-		voltages2[minutes-1] = ina219.getBusVoltage_V(); 	// Battery Voltage (V)
-		currentNow=ina219.getCurrent_mA();				// Current (mA)
-
-	  compareCurrents(currentNow);		// Get the Max and Min current
-		#endif
-
 	  rtc.clearRTCAlarm();    // Clear RTC Alarm control
 
 	  #ifdef ENABLE_DEBUG
@@ -272,10 +229,6 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 				Serial.print(F(" Wind Gust: "));        Serial.print(sw.getWindGust());	Serial.print(F("km/h "));
 				Serial.print(F(" Wind Direction: "));        Serial.print(sw.getWindDirection());	Serial.println(F("º "));
 	      Serial.print(F(" Battery Voltage: " ));       		 			Serial.print(voltages[minutes-1]);	Serial.print(F("V "));
-				#ifdef ENABLE_INA
-				Serial.print(F(" Battery Voltages (from INA): " ));       		 			Serial.print(voltages2[minutes-1]);	Serial.print(F("V "));
-				Serial.print(F(" Current (from INA):" ));       	 		Serial.print(currentNow);		Serial.print(F("mA "));
-				#endif
 				Serial.println();
 	      Serial.println(F("-----------------------------------------------------------------------------------------------------------"));
 	  #endif
@@ -294,58 +247,12 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		    humidity += humidities[i];
 		    pressure += pressures[i];
 		    batteryVoltage += voltages[i];
-				#ifdef ENABLE_INA
-				batteryVoltage2 += voltages2[i];
-				#endif
-
-		    #ifdef DEBUG_UI
-				        // for testing
-		        Serial.print(F(" i: "));     Serial.print(i);
-		        Serial.print(F(" TP: "));    Serial.print(temperatures[i]);
-		        Serial.print(F(" HU: "));    Serial.print(humidities[i]);
-		        Serial.print(F(" PA: "));    Serial.print(pressures[i]);
-		        Serial.print(F(" BV: "));    Serial.print(voltages[i]);
-						#ifdef ENABLE_INA
-						Serial.print(F(" BV2: "));    Serial.println(voltages2[i]);
-						#endif
-		    #endif
 		  }
-
-		  #ifdef ENABLE_INA
-		        #ifdef DEBUG_UI
-		        Serial.print(F(" MaxC: "));    Serial.print(currentMax);
-		        Serial.print(F(" MinC: "));    Serial.println(currentMin);
-						#endif
-		  #endif
 
 		  windDirection = sw.getWindDirection();  // Wind Direction (º)
 		  windSpeed = sw.getWindSpeed(minutes);   // Wind Speed (km/h)
 		  windGust = sw.getWindGust();   // Wind Gust (km/hh)
 		  amountRain = sr.getRain();        // Rain (mm)
-
-
-			#ifdef ENABLE_UI
-			Serial.println();
-			Serial.println(F("-----------------------------------------------------------------------------------------------------------"));
-			Serial.print(F(" ==> Send Period Reached! Weather values average for the last "));     Serial.print(minutes);	Serial.println(F(" minutes <=="));
-			Serial.println();
-			Serial.print(F(" Temperature: "));                     Serial.print(temperature/minutes);		Serial.print(F("ºC "));
-			Serial.print(F(" Humidity: "));                     Serial.print(humidity/minutes);	Serial.print(F("% "));
-			Serial.print(F(" Pressure: "));                     Serial.print(pressure/minutes);	Serial.println(F("KPa "));
-			Serial.print(F(" Rain: "));           Serial.print(amountRain);	Serial.println(F("mm "));
-			Serial.print(F(" Wind Speed: "));        Serial.print(windSpeed);	Serial.print(F("km/h "));
-			Serial.print(F(" Wind Gust: "));        Serial.print(windGust);	Serial.print(F("km/h "));
-			Serial.print(F(" Wind Direction: "));        Serial.print(windDirection);	Serial.println(F("º "));
-			Serial.print(F(" Battery Voltage: " ));       		 			Serial.print(batteryVoltage/minutes);	Serial.print(F("V "));
-				#ifdef ENABLE_INA
-				Serial.print(F(" Battery Voltages (from INA): " ));       		 			Serial.print(batteryVoltage2/minutes);	Serial.print(F("V "));
-				Serial.print(F(" Maximum Current  (from INA):" ));       	 		Serial.print(currentMax);		Serial.print(F("mA "));
-				Serial.print(F(" Minimum Current  (from INA):" ));       	 		Serial.print(currentMin);		Serial.print(F("mA "));
-				#endif
-			Serial.println();
-			Serial.println(F("-----------------------------------------------------------------------------------------------------------"));
-			#endif
-
 
 
 		  // Set measures to Weather Record object
@@ -359,27 +266,9 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		  wr.setRainClicks(sr.getRainClicks());                  // Rain Clicks (interrupts)
 		  wr.setWindGust(windGust);               // Wind Gust (kPh)
 		  wr.setBatteryVoltage(batteryVoltage/minutes);   // Battery Voltage (V)
-			#ifdef ENABLE_INA
-			wr.setBatteryINA(batteryVoltage2/minutes);   // Battery Voltage INA (V)
-		  wr.setMaxCurrent(currentMax);			  // Min Current (mA)
-		  wr.setMinCurrent(currentMin);			  // Max Current (mA)
-			#endif
 	}
 	//---------------------------------------------------------------------------------------------------
 
-
-	//-------------------------------- Get the Max and Min current --------------------------------------
-	#ifdef ENABLE_INA
-	void WeatherStation::compareCurrents(float current)
-	{
-		if (current>currentMax)
-			currentMax=current;
-
-		if (current<currentMin)
-			currentMin=current;
-	}
-	#endif
-	//---------------------------------------------------------------------------------------------------
 
 	//------------------------------ Weather Station Operation Task -------------------------------------
 	void WeatherStation::task()

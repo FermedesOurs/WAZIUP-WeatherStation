@@ -2,10 +2,9 @@
 #include "SensorTemperature.h"
 
 
-//Initialize
+//Initialize SensorTemperature
 SensorTemperature::SensorTemperature()
 {
-
 }
 
 	//------------------------------- Begin Temperature sensor -------------------------------------

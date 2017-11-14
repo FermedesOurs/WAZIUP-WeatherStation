@@ -6,8 +6,8 @@
 
 class WeatherRecord
 {
+	// Public Variables/Functions
 	public:
-	//Public Functions
 	WeatherRecord();
 	void setTemperature(float value);			// Set Weather Record Temperature (ºC)
 	float getTemperature();						// Return Weather Record Temperature (ºC)
@@ -30,21 +30,8 @@ class WeatherRecord
 	void setWindClicks(unsigned long value);	// Set Weather Record Wind Clicks (nº of interrupts)
 	unsigned long getWindClicks();				// Return Weather Record Rain Clicks (nº of interrupts)
 
-	#ifdef ENABLE_INA
-	void setBatteryINA(float value);		// Set Weather Record Battery INA (V)
-	float getBatteryINA();					// Return Weather Record Battery INA (V)
-	void setMaxCurrent(float value);			// Set Weather Record Max Current (mA)
-	float getMaxCurrent();						// Return Weather Record Max Current (mA)
-	void setMinCurrent(float value);			// Set Weather Record Min Current (mA)
-	float getMinCurrent();						// Return Weather Record Min Current (mA)
-	#endif
-
-	//Public Variables
-
+	// Private Variables/Functions
 	private:
-	//Private Functions
-
-	//Private Variables
 	float temperature;
 	float humidity;
 	float pressure;
@@ -55,12 +42,6 @@ class WeatherRecord
 	float battery;
 	unsigned long rainClicks;
 	unsigned long windClicks;
-
-	#ifdef ENABLE_INA
-	float batteryINA;
-	float maxCurrent;
-	float minCurrent;
-	#endif
 };
 
 #endif

@@ -2,9 +2,7 @@
 #define SENSOR_RTC
 
 #include <Arduino.h>
-
 #include <SPI.h>
-
 #include <Wire.h>
 
 // -------- Uncomment the sensor to be used --------
@@ -21,17 +19,17 @@
 class SensorRTC
 {
 	public:
-	//Public Functions
+	//Public Variables/Functions
 	SensorRTC();
 	int begin();				// Begin the Pressure sensor selected (return 0 if ok, return 1 if erro)
-	void configRTC();			// Config RTC
+	void configRTC(const __FlashStringHelper* date, const __FlashStringHelper* times);			// Config RTC
 
-	void clearRTCAlarm();		// Clear RTC alarm state
-	int getRTCAlarm();			// Return RTC alarm state (return 0 if alarm macth, return 1 if erro)
+	#ifdef USE_RCTInt
+		void clearRTCAlarm();		// Clear RTC alarm state
+		int getRTCAlarm();			// Return RTC alarm state (return 0 if alarm macth, return 1 if erro)
+	#endif
 
-
-	//Public Variables
-
+	//Private Variables/Functions
 	private:
 	#ifdef USE_RCTInt
 		RTCInt rtc;				// Define RTC object
@@ -39,11 +37,8 @@ class SensorRTC
 		static void isr2();
 		static SensorRTC * SensorRTC_instance;
 		volatile unsigned int alarme;
+		uint8_t conv2d(const char* p);
 	#endif
-
-	//Private Functions
-
-	//Private Variables
 };
 
 #endif

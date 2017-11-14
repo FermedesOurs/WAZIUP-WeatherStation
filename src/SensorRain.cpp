@@ -2,7 +2,7 @@
 #include "SensorRain.h"
 
 
-//Initialize
+//Initialize SensorRain
 SensorRain::SensorRain(int interrupt_pin)
 {
 	r_int_pin=interrupt_pin;
@@ -34,7 +34,7 @@ SensorRain::SensorRain(int interrupt_pin)
 		    rain++; 					//Each dump is 0.011" of water
 		    lastRainIRQ = millis(); 	// Set up for next event
 		  }
-		  control=1;			// (FINAL VERSION: TO BE DELETED)
+		  control=1;
 	}
 	//----------------------------------------------------------------------------------------------
 
@@ -42,10 +42,9 @@ SensorRain::SensorRain(int interrupt_pin)
 	//--------------------------------- Attach Rain Interrupt --------------------------------------
 	void SensorRain::attachRainInterrupt()
 	{
+		pinMode(r_int_pin, INPUT_PULLUP); // Input from wind meters windspeed sensor
 
-		pinMode(r_int_pin, INPUT_PULLUP); // input from wind meters windspeed sensor
-
-		attachInterrupt(digitalPinToInterrupt(r_int_pin), isr1, FALLING);    //FALLING
+		attachInterrupt(digitalPinToInterrupt(r_int_pin), isr1, FALLING);
 		SensorRain_instance = this;
 	}
 	//----------------------------------------------------------------------------------------------
@@ -67,12 +66,11 @@ SensorRain::SensorRain(int interrupt_pin)
 	void SensorRain::clearRain()
 	{
   		rain=0;
-  		control=0;			// (FINAL VERSION: TO BE DELETED)
+  		control=0;
 	}
 	//----------------------------------------------------------------------------------------------
 
 
-	// (FINAL VERSION: TO BE DELETED)
 	//-------------------------------------- Clear Rain Control ------------------------------------
 	void SensorRain::clearRainControl()
 	{

@@ -3,9 +3,7 @@
 
 
 #include <Arduino.h>
-
 #include <SPI.h>
-
 #include <Wire.h>
 
 
@@ -30,17 +28,13 @@
 
 class SensorTemperature
 {
+	// Public Variables/Functions
 	public:
-	//Public Functions
 	SensorTemperature();
 	int begin();				// Begin the Temperature sensor selected (return 0 if ok, return 1 if erro)
 	float getTemperature();		// Return the Temperature sensor measure (ºC)
 
-
-
-
-	//Public Variables
-
+	//Private Variables/Functions
 	private:
 		#ifdef USE_MPL3115A2
 			MPL3115A2 mpl31;			// Define the sensor object
@@ -53,9 +47,6 @@ class SensorTemperature
 		#ifdef USE_AM2315
 			Adafruit_AM2315 am23;		// Define the sensor object
 		#endif
-	//Private Functions
-
-	//Private Variables
 };
 
 #endif
