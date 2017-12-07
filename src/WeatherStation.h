@@ -2,7 +2,6 @@
 #define WEATHER_STATION
 
 #include <Arduino.h>
-
 #define ENABLE_DEBUG	// Enabling debug prints
 
 #define VBATPIN A7    // Voltage Battery Voltage Pin

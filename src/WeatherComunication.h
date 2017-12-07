@@ -7,6 +7,12 @@
 
 #include "SX1272.h"
 
+// SX1272 Configurations
+#define DEFAULT_CHANNEL CH_10_868
+#define LORAMODE  1
+#define node_addr 25
+#define DEFAULT_DEST_ADDR 1
+
 
 
 class WeatherComunication

@@ -2,15 +2,6 @@
 #include "WeatherComunication.h"
 
 
-// SX1272 Configurations
-#define MAX_DBM 14
-#define DEFAULT_CHANNEL CH_10_868
-#define LORAMODE  1
-#define node_addr 8
-#define DEFAULT_DEST_ADDR 1
-
-
-
 //Initialize WeatherComunication
 WeatherComunication::WeatherComunication()
 :sx()	// Singleton instance of the radio driver object
@@ -81,7 +72,7 @@ WeatherComunication::WeatherComunication()
 
 			r_size = sprintf((char*)data , "\\!");
 			// "SGSH52UGPVAUYG3S" is the defaulf Thing Speak API Key. Changed to you ThingSpeak API Key or Comment and the Gateway will define the default key
-			r_size += sprintf((char*)data + r_size, "ThingSpeakAPIKey");
+			//r_size += sprintf((char*)data + r_size, "SGSH52UGPVAUYG3S");
 			r_size += sprintf((char*)data + r_size, "#1#TP/%s/", dtostrf(wr.getTemperature(), 2, 2, auxBuf));
 			r_size += sprintf((char*)data + r_size, "HD/%s/", dtostrf(wr.getHumidity(), 2, 2, auxBuf));
 			r_size += sprintf((char*)data + r_size, "PA/%s/", dtostrf(wr.getPressure(), 6, 2, auxBuf));
@@ -89,7 +80,7 @@ WeatherComunication::WeatherComunication()
 			r_size += sprintf((char*)data + r_size, "WS/%s/", dtostrf(wr.getWindSpeed(), 3, 2, auxBuf));
 			r_size += sprintf((char*)data + r_size, "WG/%s/", dtostrf(wr.getWindGust(), 3, 2, auxBuf));
 			r_size += sprintf((char*)data + r_size, "RA/%s/", dtostrf(wr.getAmountRain(), 2, 2, auxBuf));
-			r_size += sprintf((char*)data + r_size, "BV/%s/", dtostrf(wr.getBatteryVoltage(), 2, 2, auxBuf));
+			r_size += sprintf((char*)data + r_size, "BV/%s", dtostrf(wr.getBatteryVoltage(), 2, 2, auxBuf));
 
 			sx.sendPacketTimeout(DEFAULT_DEST_ADDR, data, r_size);
 	}

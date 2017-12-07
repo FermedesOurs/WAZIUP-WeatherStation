@@ -286,7 +286,9 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		      {
 		          getWeatherAverage();   // Get weather measure averages
 
-		          wc.sendMessageSerial(wr);         // Send message
+							#ifdef ENABLE_DEBUG
+		          	wc.sendMessageSerial(wr);         // Send message
+							#endif
 		          wc.sendMessageLoRa(wr);
 
 		          clearValues();         // Clear variables, counters

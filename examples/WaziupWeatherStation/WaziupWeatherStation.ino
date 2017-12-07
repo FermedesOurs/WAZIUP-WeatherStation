@@ -2,15 +2,15 @@
 // LoRa Weather Station
 //
 // This is a code to work with the Waziup Weather Station solution:
-// <https://iot-catalogue.unparallel.pt/unparallel/#iotSolution/59b1797c763cfc066f6d092b>
+// <https://iot-catalogue.unparallel.pt/#iotSolution/59b1797c763cfc066f6d092b>
 //
-// Copyright (C) UNPARALLEL Innovation, Lda <http://www.unparallel.pt>
-// November 2017
+// Copyright © UNPARALLEL Innovation, Lda <http://www.unparallel.pt>
+// December 2017
 //---------------------------------------------------------------------------------------------------------------
 
 
 // Send Period (in minutes)
-#define PERIOD 1
+#define PERIOD 10
 
 // Weather Station pins to Adafruit Feather M0
 #define RAIN 11
