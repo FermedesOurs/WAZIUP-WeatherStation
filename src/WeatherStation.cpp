@@ -71,7 +71,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		{
 		  #ifdef ENABLE_DEBUG
 		    Serial.println();
-		    Serial.println(F("Weather Station Sensors Founded!"));
+		    Serial.println(F("Weather Station Sensors Found!"));
 				Serial.println(F("------------------------------------------------------------"));
 		  #endif
 		}
