@@ -2,11 +2,11 @@
 
 
 //Initialize WeatherStation
-WeatherStation::WeatherStation(int wind_speed, int rain, int wind_dir, int period_time)
+WeatherStation::WeatherStation(int period_time)
 :
 wc(),
-sr(rain),
-sw(wind_speed, WDIR_CALIBRATION, wind_dir)
+sr(RAIN),
+sw(WSPEED, WDIR_CALIBRATION, WDIR)
 {
 	period=period_time;
 	minutes = 0;
@@ -63,7 +63,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		{
 		  #ifdef ENABLE_DEBUG
 		    Serial.println();
-		    Serial.println(F("Weather Station Sensors Erro!"));
+		    Serial.println(F("Weather Station Sensors Error!"));
 				Serial.println(F("------------------------------------------------------------"));
 		  #endif
 		}
@@ -114,7 +114,7 @@ sw(wind_speed, WDIR_CALIBRATION, wind_dir)
 		  if( wc.configLoRa()!=0)
 		  {
 		    #ifdef ENABLE_DEBUG
-		      Serial.println(F("LoRa module config Erro!"));
+		      Serial.println(F("LoRa module config Error!"));
 		    #endif
 		    return 1;
 		  }

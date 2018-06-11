@@ -7,6 +7,11 @@
 #define VBATPIN A7    // Voltage Battery Voltage Pin
 #define WDIR_CALIBRATION 0.973    // (990/1017) 990 = max value table, 1017 max ADC acquired
 
+// Weather Station pins to Adafruit Feather M0
+#define RAIN 11
+#define WSPEED 12
+#define WDIR A0
+
 // LoRa module pins to Adafruit Feather M0
 #define RFM95_CS 8
 #define RFM95_RST 4
@@ -30,7 +35,7 @@ class WeatherStation
 {
 	// Public Variables/Functions
 	public:
-	WeatherStation(int wind_speed, int rain, int wind_dir, int period_time);
+	WeatherStation(int period_time);
 	void init();
 	int begin();
 	int beginSensors();

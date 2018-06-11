@@ -2,24 +2,23 @@
 // LoRa Weather Station
 //
 // This is a code to work with the Waziup Weather Station solution:
-// <https://iot-catalogue.unparallel.pt/#iotSolution/59b1797c763cfc066f6d092b>
+// <https://www.iot-catalogue.com/products/59b1797c763cfc066f6d092b>
+//
+// Note: Without using the Waziup Weather Station PCB ensure that
+// the cable connections between Weather Shield and Feather M0 match with
+// the indicated in Annex B of the Assembly Guide.
 //
 // Copyright © UNPARALLEL Innovation, Lda <http://www.unparallel.pt>
-// December 2017
+// June 2018
 //---------------------------------------------------------------------------------------------------------------
 
 
 // Send Period (in minutes)
 #define PERIOD 10
 
-// Weather Station pins to Adafruit Feather M0
-#define RAIN 11
-#define WSPEED 12
-#define WDIR A0
-
 // Include and create Weather Station object.
 #include <WeatherStation.h>
-WeatherStation ws(WSPEED, RAIN, WDIR, PERIOD);
+WeatherStation ws(PERIOD);
 
 
 // Setup
