@@ -1,4 +1,4 @@
-# LoRa Weather Station for Waziup project - by UNPARALLEL Innovation, Lda
+# LoRa Weather Station for WAZIUP project - by UNPARALLEL Innovation, Lda
 
 This repository provide all information related to the LoRa Weather Station.
 This Weather Station uses LoRa communication technology. It describes the creation of a vigilant weather supervision, composed by multi-tech sensors as part of the IoT sensor node with LoRa network integration.
